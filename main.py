@@ -8,13 +8,13 @@ password = util.get_creds()[1]
 
 # get token
 token = util.get_token(username, password)
-
+print(token)
 # the IRWIN hosted feature service to query
-endpoint_url = 'https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/IRWIN_Incidents/' \
-               'FeatureServer/0/query?resultOffset={}'
+endpoint_url = 'https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/IRWIN_Incidents/FeatureServer/0/' \
+               'query?resultOffset={}'
 
 # the where clause to narrow down results
-where = "ModifiedOnDateTime > 1591707599000"
+where = "ModifiedOnDateTime > 1601655471000"
 
 offset = 2000
 
@@ -55,4 +55,4 @@ while limit_exceeded:
 
 # write the feature collection to a csv file
 csv_file = 'data.csv'
-util.response_to_dict(feature_collection, csv_file)
+util.response_to_dict_nopd(feature_collection, csv_file)
