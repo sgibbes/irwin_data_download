@@ -14,7 +14,7 @@ endpoint_url = 'https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/servic
                'query?resultOffset={}'
 
 # the where clause to narrow down results
-where = "ModifiedOnDateTime > 1601655471000"
+where = "CreatedOnDateTime >= 1585742400000"
 
 offset = 2000
 
@@ -54,5 +54,5 @@ while limit_exceeded:
 
 
 # write the feature collection to a csv file
-csv_file = 'data.csv'
+csv_file = 'incidents_sinceApril2020.csv'
 util.response_to_dict_nopd(feature_collection, csv_file)
