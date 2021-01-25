@@ -2,6 +2,60 @@ import requests
 import json
 import csv
 from urllib.parse import urlencode
+from tabulate import tabulate
+import time
+
+
+def get_time(epoch):
+    s, ms = divmod(epoch, 1000)
+    return '%s.%03d' % (time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(s)), ms)
+
+
+def create_table(username, password, irwinid, reportToDateTime):
+    token = get_token_inputs(username, password)
+
+    endpoint_url = 'https://irwin.doi.gov/arcgis/rest/services/Resource/FeatureServer/2/query?includeResource=True'
+
+    where = "IrwinID = '{}' AND (FulfillmentStatus = 'Closed' or FulfillmentStatus = 'Filled') AND " \
+            "((DemobETD < '{}' OR DemobETD is null) AND DemobETA < '{}')".format(irwinid,
+                                                                                 reportToDateTime, reportToDateTime)
+
+    matchingCRs = query_api(endpoint_url, token, where)
+
+    capabilityRequest = matchingCRs['features'][0]['attributes']
+    resource = (matchingCRs['features'][0]['capability']['resource'])
+    capability = (matchingCRs['features'][0]['capability']['attributes'])
+    iriwnCTID = capability['IrwinCTID']
+    # get capability type:
+    capTypewhere = "IrwinCTID = '{}'".format(iriwnCTID)
+    captypeRecord = query_api('https://irwin.doi.gov/arcgis/rest/services/Resource/FeatureServer/3/query?',
+                                   token, capTypewhere)
+
+    headers = ['Resource Kind', 'DemobETA', 'DemobETD', 'Operational Status',
+               'Fulfillment Status']
+    tableRows = []
+    for cr in matchingCRs['features']:
+        requestList = []
+
+        capabilityRequest = cr['attributes']
+        irwinID = capabilityRequest['IrwinID']
+        resource = cr['capability']['resource']['attributes']
+        demobETA = get_time(capabilityRequest['DemobETA'])
+
+        demobETD = get_time(capabilityRequest['DemobETD'])
+        fulfillmentStatus = capabilityRequest['FulfillmentStatus']
+        operationalName = resource['OperationalName']
+        operationalStatus = resource['OperationalStatus']
+        resourceKind = resource['ResourceKind']
+        capability = cr['capability']['attributes']
+        iriwnCTID = capability['IrwinCTID']
+
+        requestList.extend(
+            [resourceKind, demobETA, demobETD, operationalStatus, fulfillmentStatus])
+
+        tableRows.append(requestList)
+
+    return tabulate(tableRows, headers=headers, tablefmt='orgtbl')
 
 
 def get_creds():
@@ -22,6 +76,7 @@ def get_token_inputs(username, password):
     response = response.json()
 
     return response['token']
+
 
 def get_token():
     with open('creds.json') as f:
@@ -50,7 +105,6 @@ def query_api(url, token, where):
 
     r = requests.post(url=url, data=payload, headers=headers)
 
-    print(r)
     try:
         response = r.content.decode('utf-8')
     except UnicodeDecodeError:
