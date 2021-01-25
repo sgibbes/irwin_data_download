@@ -2,12 +2,18 @@ import util
 import json
 from tabulate import tabulate
 import sys
+from getpass import getpass
+
 irwinid = '39F9112A-0232-4D3A-802A-EECA2D0579E7'
 # reportFromDateTime = '1609511320000' # Friday, January 1, 2021 2:28:40 PM
 reportToDateTime = '8/2/2020 17:13:32'
 
 # get token
-token = util.get_token()
+username = input("IRWIN Username:\n")
+
+password = getpass()
+
+token = util.get_token_inputs(username, password)
 
 # start querying capability request table
 endpoint_url = 'https://irwin.doi.gov/arcgis/rest/services/Resource/FeatureServer/2/query?includeResource=True'

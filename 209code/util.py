@@ -10,6 +10,19 @@ def get_creds():
     return usr_data['username'], usr_data['password']
 
 
+def get_token_inputs(username, password):
+
+    data = {'f': 'json',
+              'username': username,
+              'password': password
+              }
+
+    response = requests.post('https://irwin.doi.gov/arcgis/tokens/generateToken?', data)
+
+    response = response.json()
+
+    return response['token']
+
 def get_token():
     with open('creds.json') as f:
         usr_data = json.load(f)
