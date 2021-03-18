@@ -1,7 +1,2 @@
-*.zip
 creds.json
 *.csv
-*.idea/*
-.DS_Store
-__pycache__/util.cpython-37.pyc
-.idea/workspace.xml
