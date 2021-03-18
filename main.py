@@ -33,5 +33,5 @@ while limit_exceeded:
 
 
 # write the feature collection to a csv file
-csv_file = 'incidents_sinceApril2020.csv'
-util.response_to_dict_nopd(feature_collection, csv_file)
+csv_file = 'data.csv'
+util.response_to_dict(feature_collection, csv_file)

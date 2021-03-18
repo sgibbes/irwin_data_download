@@ -1,5 +1,6 @@
 import requests
 import json
+import pandas as pd
 import csv
 from urllib.parse import urlencode
 
@@ -61,32 +62,6 @@ def response_to_dict(feature_coll, csv_file):
     df.replace(to_replace=[r"\\t|\\n|\\r", "\t|\n|\r"], value=[" ", " "], regex=True, inplace=True)
 
     df.to_csv(csv_file)
-
-
-def response_to_dict_nopd(feature_coll, csv_file):
-    # put attributes into dictionary
-    attributes = []
-    for f in feature_coll['features']:
-
-        try:
-            # add geometry to the attributes as a new key
-            f['attributes']['geometry'] = f['geometry']
-
-        except:
-            pass
-
-        attributes.append(f['attributes'])
-
-    csv_columns = attributes[0].keys()
-
-    try:
-        with open(csv_file, 'w') as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
-            writer.writeheader()
-            for data in attributes:
-                writer.writerow(data)
-    except IOError:
-        print("I/O error")
 
 
 def get_creds():

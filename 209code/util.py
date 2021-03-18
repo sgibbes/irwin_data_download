@@ -71,7 +71,7 @@ def get_token_inputs(username, password):
               'password': password
               }
 
-    response = requests.post('https://irwin.doi.gov/arcgis/tokens/generateToken?', data)
+    response = requests.post('https://irwinoat.doi.gov/arcgis/tokens/generateToken?', data)
 
     response = response.json()
 
@@ -87,7 +87,7 @@ def get_token():
               'password': usr_data['password'],
               }
 
-    response = requests.post('https://irwin.doi.gov/arcgis/tokens/generateToken?', data)
+    response = requests.post('https://irwinoat.doi.gov/arcgis/tokens/generateToken?', data)
 
     response = response.json()
 
