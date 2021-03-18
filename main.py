@@ -2,6 +2,27 @@ import util
 import page_api
 from util import *
 
+# enter credentials to generate a token
+username = util.get_creds()[0]
+password = util.get_creds()[1]
+
+# get token
+token = util.get_token(username, password)
+
+# the IRWIN hosted feature service to query
+endpoint_url = 'https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/IRWIN_Incidents/' \
+               'FeatureServer/0/query?resultOffset={}'
+
+# the where clause to narrow down results
+where = "ModifiedOnDateTime > 1591707599000"
+
+offset = 2000
+
+# return all results in a list of dictionaries
+feature_collection = page_api.page_api(token, endpoint_url, where, offset)
+
+# start the result offset at 0, increase by "offset" each iteration
+result_offset = 0
 
 # create empty list to store each record json
 feature_coll = {'features': []}
